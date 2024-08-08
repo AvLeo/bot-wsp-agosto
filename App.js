@@ -24,12 +24,37 @@ const bot = new Client({
 
 bot.on('ready', async () => {
     const media = MessageMedia.fromFilePath('./src/assets/images/bongo_cat_programming.jpg')
-    await bot.sendMessage( `549${numbers.guille}@c.us` , media, { sendMediaAsSticker: true })
+    await bot.sendMessage(`549${numbers.guille}@c.us`, media, { sendMediaAsSticker: true })
 })
 
 bot.on('qr', (qr) => {
     qrcode.generate(qr, { small: true })
 })
+
+bot.on('message', async message => {
+
+    const from = message.from
+    const msj = message.body.toLowerCase()
+
+    switch (from) {
+        case `549${numbers.guille}@c.us`:
+            const media = MessageMedia.fromFilePath('./src/assets/images/bongo_cat_programming.jpg')
+            await bot.sendMessage(from, media, { sendMediaAsSticker: true })
+            break;
+        default:
+            await message.reply('A ratitas desconocidas no les respondo 🐀')
+    }
+
+})
+
+
+cron.schedule('5 * * * * *',async () => {
+    const media = MessageMedia.fromFilePath('./src/assets/images/bongo_cat_programming.jpg')
+
+    await bot.sendMessage(`549${numbers.lean}@c.us`, "Tengo ganas de molestar cada 5 segundos")
+    await bot.sendMessage(`549${numbers.lean}@c.us`, media, { sendMediaAsSticker: true })
+    await bot.sendMessage(`549${numbers.lean}@c.us`, "No te enojes 🤪")
+});
 
 
 bot.initialize();
