@@ -1,0 +1,19 @@
+{
+  "name": "bot-wsp-agosto",
+  "version": "1.0.0",
+  "main": "App.js",
+  "scripts": {
+    "start": "node App.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Leonardo Avila",
+  "license": "ISC",
+  "description": "Proyecto creado para el curso CDF - Agosto",
+  "type": "module",
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.25.0"
+  }
+}
