@@ -4,6 +4,7 @@ import wweb from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal'
 import cron from 'node-cron'
 import { numbers } from './data.js';
+import { deadChars, getChar } from './src/modules/rickAndMorty/getCharacter.js';
 
 
 const dt = JSON.parse(JSON.stringify(numbers))
@@ -24,7 +25,7 @@ const bot = new Client({
 
 bot.on('ready', async () => {
     const media = MessageMedia.fromFilePath('./src/assets/images/bongo_cat_programming.jpg')
-    await bot.sendMessage(`549${numbers.guille}@c.us`, media, { sendMediaAsSticker: true })
+    await bot.sendMessage(`549${numbers.me}@c.us`, media, { sendMediaAsSticker: true })
 })
 
 bot.on('qr', (qr) => {
@@ -36,25 +37,44 @@ bot.on('message', async message => {
     const from = message.from
     const msj = message.body.toLowerCase()
 
-    switch (from) {
-        case `549${numbers.guille}@c.us`:
-            const media = MessageMedia.fromFilePath('./src/assets/images/bongo_cat_programming.jpg')
-            await bot.sendMessage(from, media, { sendMediaAsSticker: true })
-            break;
-        default:
-            await message.reply('A ratitas desconocidas no les respondo 🐀')
+    console.log(from);
+
+    if (from === "120363318106547962@g.us") {
+        if (msj.includes("/personaje/")) {
+            const { name, status, image } = await getChar(msj)
+            console.log(name, status, image)
+            const img = await MessageMedia.fromUrl("https://rickandmortyapi.com/api/character/avatar/4.jpeg")
+            await bot.sendMessage('120363318106547962@g.us', img, { caption: `${name} - *${status}*` })
+            await bot.sendMessage('120363318106547962@g.us', "pedime otro si querés")
+        }
+        // dead/morty
+        if (msj.includes("dead/")) {
+            const {pj_uno, pj_dos, epidoseUno, episodesDos} = await deadChars(msj)
+            const mdUno = await MessageMedia.fromUrl(pj_uno.image)
+            const mdDos = await MessageMedia.fromUrl(pj_dos.image)
+            await bot.sendMessage('120363318106547962@g.us', mdUno, { caption: `${pj_uno.name} - *${pj_uno.status} - ${epidoseUno}*` })
+            await bot.sendMessage('120363318106547962@g.us', mdDos, { caption: `${pj_dos.name} - *${pj_dos.status}* - ${episodesDos}` })
+        }
     }
+
+
+    // switch (from) {
+    //     case `120363322358905399@g.us`:
+    //         const media = MessageMedia.fromFilePath('./src/assets/images/ratitas_programando.jpeg')
+    //         await bot.sendMessage(from, media, { sendMediaAsSticker: true })
+    //         break;
+    //     default:
+    //         await message.reply('A ratitas desconocidas no les respondo 🐀')
+    // }
 
 })
 
 
-cron.schedule('5 * * * * *',async () => {
-    const media = MessageMedia.fromFilePath('./src/assets/images/bongo_cat_programming.jpg')
+// cron.schedule('10,30,59 * * * * *', async () => {
+//     const media = MessageMedia.fromFilePath('./src/assets/images/ratitas_programando.jpeg')
 
-    await bot.sendMessage(`549${numbers.lean}@c.us`, "Tengo ganas de molestar cada 5 segundos")
-    await bot.sendMessage(`549${numbers.lean}@c.us`, media, { sendMediaAsSticker: true })
-    await bot.sendMessage(`549${numbers.lean}@c.us`, "No te enojes 🤪")
-});
+//     await bot.sendMessage(`120363318106547962@g.us`, media, { sendMediaAsSticker: true })
+// });
 
 
 bot.initialize();
